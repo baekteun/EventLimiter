@@ -44,7 +44,8 @@ private extension Throttler {
         }
         self.action = nil
 
-        self.task = Task {
+        self.task = Task { [weak self] in
+            guard let self else { return }
             try? await Task.sleep(nanoseconds: self.dueTime)
 
             if self.latest, let action = self.action {
