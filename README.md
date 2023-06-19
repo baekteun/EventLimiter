@@ -52,7 +52,7 @@ If you prefer not to use either of the aforementioned dependency managers, you c
 ```swift
 let debouncer = Debouncer(for: 0.3)
 debouncer {
-    self.search(keyword: keyword)
+    await self.search(keyword: keyword)
 }
 debouncer.cancel()
 ```
@@ -60,7 +60,7 @@ debouncer.cancel()
 ```swift
 let throttler = Throttler(for: 1, latest: false)
 throttler {
-    self.reachedBottom()
+    await self.reachedBottom()
 }
 throttler.cancel()
 ```
