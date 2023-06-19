@@ -2,6 +2,8 @@
 
 Simple classes for efficiently handling events.
 
+[Document](https://baekteun.github.io/EventLimiter/documentation/eventlimiter/)
+
 <br>
 
 ## Contents
