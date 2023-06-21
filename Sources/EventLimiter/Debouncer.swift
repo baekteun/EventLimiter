@@ -25,9 +25,8 @@ public final class Debouncer {
 private extension Debouncer {
     func execute(action: @escaping () async throws -> Void) {
         self.task?.cancel()
-        self.task = Task { [weak self] in
-            guard let self else { return }
-            try await Task.sleep(nanoseconds: self.dueTime)
+        self.task = Task { [dueTime] in
+            try await Task.sleep(nanoseconds: dueTime)
             guard !Task.isCancelled else { return }
             try await action()
         }
