@@ -12,9 +12,7 @@ public final class Throttler {
     }
 
     deinit {
-        self.task?.cancel()
-        self.task = nil
-        self.action = nil
+        self.cancel()
     }
 
     public func callAsFunction(
