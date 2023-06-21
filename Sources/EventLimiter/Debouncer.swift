@@ -9,8 +9,7 @@ public final class Debouncer {
     }
 
     deinit {
-        self.task?.cancel()
-        self.task = nil
+        self.cancel()
     }
 
     public func callAsFunction(action: @escaping () async throws -> Void) {
