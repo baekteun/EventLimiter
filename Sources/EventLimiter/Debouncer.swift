@@ -27,7 +27,7 @@ private extension Debouncer {
         self.task?.cancel()
         self.task = Task { [weak self] in
             guard let self else { return }
-            try? await Task.sleep(nanoseconds: self.dueTime)
+            try await Task.sleep(nanoseconds: self.dueTime)
             guard !Task.isCancelled else { return }
             try await action()
         }
