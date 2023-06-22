@@ -44,13 +44,15 @@ private extension Throttler {
 
         self.task = Task { [weak self] in
             guard let self else { return }
+            defer {
+                self.action = nil
+                self.task?.cancel()
+            }
             try? await Task.sleep(nanoseconds: self.dueTime)
 
             if self.latest, let action = self.action {
                 try await action()
-                self.action = nil
             }
-            self.task?.cancel()
         }
     }
 }
