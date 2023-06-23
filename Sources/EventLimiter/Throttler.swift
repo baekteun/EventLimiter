@@ -3,8 +3,8 @@ import Foundation
 public final class Throttler {
     private let dueTime: UInt64
     private let latest: Bool
-    private var task: Task<Void, Error>?
-    private var action: (() async throws -> Void)?
+    private var task: Task<Void, Never>?
+    private var action: (() async -> Void)?
 
     public init(for dueTime: TimeInterval, latest: Bool = true) {
         self.dueTime = UInt64(dueTime * 1_000_000_000)
@@ -16,7 +16,7 @@ public final class Throttler {
     }
 
     public func callAsFunction(
-        action: @escaping () async throws -> Void
+        action: @escaping () async -> Void
     ) {
         self.execute(action: action)
     }
@@ -30,7 +30,7 @@ public final class Throttler {
 
 private extension Throttler {
     func execute(
-        action: @escaping () async throws -> Void
+        action: @escaping () async -> Void
     ) {
         if self.latest {
             self.action = action
@@ -38,7 +38,7 @@ private extension Throttler {
         guard self.task?.isCancelled ?? true else { return }
 
         Task {
-            try await action()
+            await action()
         }
         self.action = nil
 
@@ -48,10 +48,15 @@ private extension Throttler {
                 self.action = nil
                 self.task?.cancel()
             }
-            try await Task.sleep(nanoseconds: self.dueTime)
+
+            do {
+                try await Task.sleep(nanoseconds: self.dueTime)
+            } catch {
+                return
+            }
 
             if self.latest, let action = self.action {
-                try await action()
+                await action()
             }
         }
     }

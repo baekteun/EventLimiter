@@ -2,7 +2,7 @@ import Foundation
 
 public final class Debouncer {
     private let dueTime: UInt64
-    private var task: Task<Void, Error>?
+    private var task: Task<Void, Never>?
 
     public init(for dueTime: TimeInterval) {
         self.dueTime = UInt64(dueTime * 1_000_000_000)
@@ -12,7 +12,7 @@ public final class Debouncer {
         self.cancel()
     }
 
-    public func callAsFunction(action: @escaping () async throws -> Void) {
+    public func callAsFunction(action: @escaping () async -> Void) {
         self.execute(action: action)
     }
 
@@ -23,12 +23,16 @@ public final class Debouncer {
 }
 
 private extension Debouncer {
-    func execute(action: @escaping () async throws -> Void) {
+    func execute(action: @escaping () async -> Void) {
         self.task?.cancel()
         self.task = Task { [dueTime] in
-            try await Task.sleep(nanoseconds: dueTime)
+            do {
+                try await Task.sleep(nanoseconds: dueTime)
+            } catch {
+                return
+            }
             guard !Task.isCancelled else { return }
-            try await action()
+            await action()
         }
     }
 }
