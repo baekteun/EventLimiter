@@ -48,7 +48,7 @@ private extension Throttler {
                 self.action = nil
                 self.task?.cancel()
             }
-            try? await Task.sleep(nanoseconds: self.dueTime)
+            try await Task.sleep(nanoseconds: self.dueTime)
 
             if self.latest, let action = self.action {
                 try await action()
