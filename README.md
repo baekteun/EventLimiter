@@ -42,7 +42,7 @@ dependencies: [
 ```
 
 ### Manually
-If you prefer not to use either of the aforementioned dependency managers, you can integrate CombineFlow into your project manually.
+If you prefer not to use either of the aforementioned dependency managers, you can integrate EventLimiter into your project manually.
 
 <br>
 
